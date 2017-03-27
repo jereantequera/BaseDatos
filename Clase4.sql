@@ -53,3 +53,12 @@ FROM film f1, film f2
 WHERE f1.rating LIKE f2.rating 
 AND f1.film_id < f2.film_id
 ORDER BY 1;
+
+-- 8
+SELECT DISTINCT f.title, s.first_name, s.last_name
+FROM film f, inventory i, store st, staff s
+WHERE i.store_id = 2 
+AND f.film_id = i.film_id
+AND s.store_id = 2; 
+
+
