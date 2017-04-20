@@ -52,8 +52,8 @@ WHERE address LIKE '%\_%';
 SELECT title, description, rental_rate * 15 AS "In pesos"
 FROM film ORDER BY `In pesos` ASC;
 
-SELECT name FROM  category
+SELECT name AS val FROM  category
 WHERE name LIKE 'A%' OR name LIKE 'M%'
 UNION
-SELECT name FROM  category
-WHERE name LIKE 'A%' OR name LIKE 'S%';
+SELECT title FROM  film
+WHERE title LIKE 'A%' OR title LIKE 'S%';
