@@ -22,6 +22,13 @@ INNER JOIN payment USING (rental_id)
 GROUP BY 1, 2, 3
 ORDER BY 5 DESC;
 
+SELECT *     
+FROM customer
+INNER JOIN address USING (address_id)
+GROUP BY customer_id
+ORDER BY customer_id DESC;
+
+
 -- 4
 SELECT film.title 
 FROM film
