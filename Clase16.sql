@@ -48,3 +48,52 @@ SELECT
     *
 FROM
     employees_audit;
+
+-- Ejercicios
+
+-- 1
+
+insert  into `employees`(`employeeNumber`,`lastName`,`firstName`,`extension`,`email`,`officeCode`,`reportsTo`,`jobTitle`) values 
+(1002,'aaaras','Ivan','x1234',NULL,'1',NULL,'ceo');
+
+-- El email no puede ser nulo entonces tira error
+    
+    
+-- 2 
+UPDATE employees set employeeNumber = employeeNumber - 20
+
+-- Le hace un update a la tabla restandole 20 al employeeNumber
+
+UPDATE employees set employeeNumber = employeeNumber + 20
+
+-- Tira un error diciendo que hay un atributo primario que esta duplicado 
+
+-- 3 
+
+ALTER TABLE employees ADD AGE INT;
+ALTER TABLE employees
+ADD CONSTRAINT myCheckConstraint CHECK(AGE >= 18 AND AGE <=70);
+
+-- 5 
+
+ALTER TABLE employees ADD lastUpdate DATETIME DEFAULT NULL;
+
+DELIMITER //
+CREATE TRIGGER employee_lastUpdate 
+    BEFORE UPDATE ON employees
+    FOR EACH ROW 
+BEGIN
+    INSERT INTO employees_audit
+    SET action = 'update',
+     employeeNumber = OLD.employeeNumber,
+        lastUpdate = NOW(); 
+END //
+DELIMITER ;
+
+	
+
+
+
+
+
+
