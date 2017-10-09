@@ -1,0 +1,266 @@
+1-docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
+2- PING
+   CONFIG GET *
+3- APPEND mykey "Hola"
+4- HSET myhash field1 "Hola"
+5- LPUSH mylist "Hello"
+   LPUSH mylist "world"
+6- SET myset "Hola"
+7- ZADD tutorials 1 redis
+   ZADD tutorials 2 mongodb
+   ZADD tutorials 3 mysql
+
+8- SUBSCRIBE first second <- Aca te metes en el canal (en una consola y escuchas)
+   PUBLISH second Hello <-Publicas un msg que le llega a todos (en otra consola y envias)
+
+9- MULTI <-Pone a todos los comandos que le siguen en una cola
+   INCR foo
+   PUBLISH second holanda
+   EXEC <-Ejecuta los comandos
+10- Se puede hacer un backup en redis tenes que ir a la carpeta donde estan los datos y copiar el archivo .rdb (Redis no guarda todo al instante en esa base asique es posible que no este actualizado el backup podes usar el camando save antes del backup)
+    Para automatizar esto hay un programa llamado rdiff-backup que podes poner en un cron para que se ejecute.
+11- Una buena herramienta para poder hacer un benchmark es redis-benchmark que viene en el paquete de redis-tools (se descarga sudo apt-get install redis-tools) donde podes pasarle el numero de veces que ejecute los comandos con el modificador -n seguido del numero de veces que queres (ej: redis-benchmark -n 100000) con el modificador --csv te devuelve el ouput en un csv. El ouput de de mi redis cuando ejecute este comando es este 
+====== PING_INLINE ======
+  100000 requests completed in 1.43 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.77% <= 1 milliseconds
+99.90% <= 2 milliseconds
+99.95% <= 3 milliseconds
+99.95% <= 4 milliseconds
+99.95% <= 7 milliseconds
+99.95% <= 24 milliseconds
+99.96% <= 25 milliseconds
+99.98% <= 50 milliseconds
+99.99% <= 51 milliseconds
+100.00% <= 51 milliseconds
+69881.20 requests per second
+
+====== PING_BULK ======
+  100000 requests completed in 1.40 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.65% <= 1 milliseconds
+100.00% <= 2 milliseconds
+100.00% <= 2 milliseconds
+71479.62 requests per second
+
+====== SET ======
+  100000 requests completed in 1.43 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.54% <= 1 milliseconds
+99.96% <= 2 milliseconds
+100.00% <= 4 milliseconds
+100.00% <= 7 milliseconds
+70077.09 requests per second
+
+====== GET ======
+  100000 requests completed in 1.39 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.69% <= 1 milliseconds
+99.98% <= 2 milliseconds
+100.00% <= 3 milliseconds
+71736.01 requests per second
+
+====== INCR ======
+  100000 requests completed in 1.41 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.43% <= 1 milliseconds
+100.00% <= 3 milliseconds
+100.00% <= 4 milliseconds
+100.00% <= 6 milliseconds
+70821.53 requests per second
+
+====== LPUSH ======
+  100000 requests completed in 1.46 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.19% <= 1 milliseconds
+100.00% <= 2 milliseconds
+100.00% <= 2 milliseconds
+68634.18 requests per second
+
+====== LPOP ======
+  100000 requests completed in 1.46 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.02% <= 1 milliseconds
+99.98% <= 2 milliseconds
+100.00% <= 2 milliseconds
+68306.01 requests per second
+
+====== SADD ======
+  100000 requests completed in 1.45 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+98.34% <= 1 milliseconds
+99.99% <= 2 milliseconds
+99.99% <= 3 milliseconds
+100.00% <= 4 milliseconds
+100.00% <= 5 milliseconds
+69013.11 requests per second
+
+====== SPOP ======
+  100000 requests completed in 1.41 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+99.13% <= 1 milliseconds
+100.00% <= 2 milliseconds
+100.00% <= 3 milliseconds
+70671.38 requests per second
+
+====== LPUSH (needed to benchmark LRANGE) ======
+  100000 requests completed in 1.49 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+97.94% <= 1 milliseconds
+99.93% <= 2 milliseconds
+99.98% <= 3 milliseconds
+100.00% <= 3 milliseconds
+66979.23 requests per second
+
+====== LRANGE_100 (first 100 elements) ======
+  100000 requests completed in 2.41 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+84.83% <= 1 milliseconds
+99.78% <= 2 milliseconds
+99.98% <= 3 milliseconds
+100.00% <= 3 milliseconds
+41442.19 requests per second
+
+====== LRANGE_300 (first 300 elements) ======
+  100000 requests completed in 5.40 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+0.02% <= 1 milliseconds
+98.23% <= 2 milliseconds
+99.94% <= 3 milliseconds
+100.00% <= 4 milliseconds
+100.00% <= 4 milliseconds
+18504.81 requests per second
+
+====== LRANGE_500 (first 450 elements) ======
+  100000 requests completed in 7.65 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+0.00% <= 1 milliseconds
+81.07% <= 2 milliseconds
+98.68% <= 3 milliseconds
+99.87% <= 4 milliseconds
+99.97% <= 5 milliseconds
+100.00% <= 6 milliseconds
+100.00% <= 7 milliseconds
+13075.31 requests per second
+
+====== LRANGE_600 (first 600 elements) ======
+  100000 requests completed in 10.51 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+0.00% <= 1 milliseconds
+0.07% <= 2 milliseconds
+87.41% <= 3 milliseconds
+98.99% <= 4 milliseconds
+99.93% <= 5 milliseconds
+99.98% <= 6 milliseconds
+99.99% <= 7 milliseconds
+100.00% <= 7 milliseconds
+9512.94 requests per second
+
+====== MSET (10 keys) ======
+  100000 requests completed in 1.71 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+92.21% <= 1 milliseconds
+99.82% <= 2 milliseconds
+99.95% <= 3 milliseconds
+99.99% <= 4 milliseconds
+100.00% <= 4 milliseconds
+58548.01 requests per second
+
+-12 
+Para este ejercicio use el redis-py (https://github.com/andymccurdy/redis-py), clone el repo y ejecute el setup.py, despues abri un terminal y empece a tirar codigo ejemplos:
+>>> import redis
+>>> r = redis.StrictRedis(host='localhost', port=6379, db=0)
+>>> r.set('foo', 'holanda')
+True
+>>> r.get('foo')
+'holanda'
+>>> 
+====================
+>>> p = r.pubsub()
+>>> p.subscribe('my-first-channel')
+>>> p.get_message() #No hay nada en el canal no va a mostrar nada
+{'pattern': None, 'type': 'subscribe', 'channel': 'my-first-channel', 'data': 1L}
+>>> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
