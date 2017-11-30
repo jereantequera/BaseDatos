@@ -10,3 +10,4 @@ CALL set_counter(@counter,1);
 CALL set_counter(@counter,1); 
 CALL set_counter(@counter,5); 
 SELECT @counter; -- 8
+
